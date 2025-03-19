@@ -492,6 +492,7 @@ def klocalizerCLI():
       # Parse the lines
       if lines_str: #< Still has lines to parse after removing list brackets
         for el in lines_str.split(','):
+          el = el.strip()
           if not el or not set(el).issubset([str(n) for n in range(10)] + ['-']):
             arg_error(compilation_unit_arg, "incorrect lines list format")
           if el.count('-') > 1:
