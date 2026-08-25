@@ -86,7 +86,7 @@ the following tools:
 Install the prerequisites
 
     sudo apt install -y python3-setuptools python3-dev
-    
+
 Clone and install kmax
 
     git clone https://github.com/paulgazz/kmax.git
@@ -110,7 +110,7 @@ reinstall when making changes to the code
     cd ~/linux-5.16/
     make allnoconfig
     make kernel/bpf/cgroup.o
-    
+
 results in an error: `make[2]: *** No rule to make target 'kernel/bpf/cgroup.o'.  Stop.`  We can ensure that the relevant configuration options are modified in `allnoconfig` in order to include this file and any specified lines:
 
     make allnoconfig  # configuration file stored in .config
@@ -121,7 +121,7 @@ This produces a new version of the `.config` file in `0-x86_64.config`.  To buil
     cp 0-x86_64.config .config
     make olddefconfig
     make kernel/bpf/cgroup.o
-    
+
 This time, the source file is successfully built: `CC      kernel/bpf/cgroup.o`.  Any number of `--include-mutex` constraints may be added.  If there is mutual-exclusion among source files, `klocalizer` will as many configuration files needed to cover all constraints.  Always on or off constraints can be added with `--include` or `--exclude`.  See the documentation on [`klocalizer` and `krepair`](#klocalizer-and-krepair) for more usage information.
 
 
@@ -176,7 +176,7 @@ To repair `allnoconfig` to include changed lines from a range of commits, first 
     klocalizer --repair .config -a x86_64 --include-mutex patchset.diff --exclude drivers/dma
     # build the affected source files using the repaired configuration file
     KCONFIG_CONFIG=./0-x86_64.config make.cross ARCH=x86_64 olddefconfig clean kernel/bpf/cgroup.o net/ipv4/af_inet.o net/ipv4/udp.o net/ipv6/af_inet6.o net/ipv6/udp.o net/unix/af_unix.o
-    
+
 `klocalizer` will also take patches ending in `.patch`, e.g., from `git format-patch` in addition to `.diff` as long as the file is in the unified diff format.  Be sure to run `klocalizer` from the already-patched source tree, since this contains the constraints of the resulting code from the patch.
 
 
@@ -191,10 +191,10 @@ To repair `allnoconfig` to include changed lines from a range of commits, first 
 <!-- - --include-mutex -->
 <!--   - generates N configs, each will have at least one of the include-mutex configs -->
 <!--   - if not possible to get any config with at least one, then unsat, no configs made -->
-  
+
 <!-- - --include -->
 <!--   - generates N configs, all will have all --include constraints  (all constraints are included) -->
-  
+
 <!-- - --exclude -->
 <!--   - generates N configs, none will have any of the --exclude constraints (all cosntraints are excluded) -->
 
@@ -219,15 +219,15 @@ In this stage, `kismet` discharges the whole set of constraints (optimized and k
 ### Summary format
 Upon completing the analysis, `kismet` writes a detailed summary in CSV format to the standard output.
 
-This includes the following columns:  
-- `selectee`: The selectee of the select construct.  
-- `selector`: The selector of the select construct.  
-- `visib_id`: The visibility id of the select construct. One (selectee, selector) pair might appear multiple times on different visibility constraints (e.g., within `CONFIG_SELECTOR`, there might be two entries, such as: `select SELECTEE if VISIB1`, `select SELECTEE if VISIB2`). Such constructs are distinguished with this visibility id.  
-- `constraint_type`: There are possibly multiple ways to satisfy the optimized constraints. If exploring the whole unmet space is enabled (disabled by default, use `'--explore-whole-unmet-space` to enable), all expressions to satisfy the optimized constraints are explored individually, called as SAT options. On the other hand, some random solution to precise constraints is called generic option, which suffices to verify alarms. In the summary, generic option has `constraint_type` 0 while exhaustively explored SAT options have `constraint_type` ids starting from 1.  
-- `analysis_result`: one of: `UNMET_ALARM`, `UNMET_SAFE_SYNTACTIC_PASS`, `UNMET_SAFE_OPTIMIZED_PASS`, `UNMET_SAFE_PRECISE_PASS`.  
-- `verified`: If the analysis result is an alarm, includes whether the generated test case for the related construct verifies the alarm.  
-- `forced_target_udd_only`: If the analysis result is an alarm, includes whether forcing the target unmet dependency only was successful.  
-- `testcase`: The path to the generated test case, i.e., sample Kconfig config file.  
+This includes the following columns:
+- `selectee`: The selectee of the select construct.
+- `selector`: The selector of the select construct.
+- `visib_id`: The visibility id of the select construct. One (selectee, selector) pair might appear multiple times on different visibility constraints (e.g., within `CONFIG_SELECTOR`, there might be two entries, such as: `select SELECTEE if VISIB1`, `select SELECTEE if VISIB2`). Such constructs are distinguished with this visibility id.
+- `constraint_type`: There are possibly multiple ways to satisfy the optimized constraints. If exploring the whole unmet space is enabled (disabled by default, use `'--explore-whole-unmet-space` to enable), all expressions to satisfy the optimized constraints are explored individually, called as SAT options. On the other hand, some random solution to precise constraints is called generic option, which suffices to verify alarms. In the summary, generic option has `constraint_type` 0 while exhaustively explored SAT options have `constraint_type` ids starting from 1.
+- `analysis_result`: one of: `UNMET_ALARM`, `UNMET_SAFE_SYNTACTIC_PASS`, `UNMET_SAFE_OPTIMIZED_PASS`, `UNMET_SAFE_PRECISE_PASS`.
+- `verified`: If the analysis result is an alarm, includes whether the generated test case for the related construct verifies the alarm.
+- `forced_target_udd_only`: If the analysis result is an alarm, includes whether forcing the target unmet dependency only was successful.
+- `testcase`: The path to the generated test case, i.e., sample Kconfig config file.
 
 ## `koverage`
 
@@ -274,7 +274,7 @@ make.cross ARCH=x86_64 allyesconfig
 koverage --config .config --arch x86_64 --check-patch patch.diff -o coverage_results.json
 ```
 
-`koverage` will determine a set of coverage requirements for covering the input patch, and check whether these are satisfied.  Below is the content of output `coverage_results.json` file, showing all modified 
+`koverage` will determine a set of coverage requirements for covering the input patch, and check whether these are satisfied.  Below is the content of output `coverage_results.json` file, showing all modified
 (file:line) pairs from the patch are included for compilation by the `.config` file.
 
 ```
@@ -356,7 +356,7 @@ While `allyesconfig` strives to enable all options, some have conflicting depend
 
     make allyesconfig
     make fs/squashfs/decompressor_multi.o
-    
+
 `make` fails:
 
     make[3]: *** No rule to make target 'fs/squashfs/decompressor_multi.o'.  Stop.
@@ -392,7 +392,7 @@ The unit is not included in `allyesconfig` because it on both `CONFIG_SQUASHFS` 
     CONFIG_SQUASHFS_DECOMP_MULTI=y
     # CONFIG_SQUASHFS_DECOMP_SINGLE is not set
 
-Finally, building the configuration 
+Finally, building the configuration
 
     make olddefconfig
     make fs/squashfs/decompressor_multi.o
@@ -408,7 +408,7 @@ A kernel user or developer may want a smaller kernel that includes a specific co
 
     make defconfig
     make drivers/infiniband/core/cgroup.o
-    
+
 The output contains
 
     make[2]: *** No rule to make target 'drivers/infiniband/core/cgroup.o'.  Stop.
@@ -449,13 +449,13 @@ It tells us that `powerpc` is a satisfying architecture.  We can use `make.cross
 
     make.cross ARCH=powerpc olddefconfig
     make.cross ARCH=powerpc drivers/block/ps3disk.o
-    
+
 Its output contains
 
       CC      drivers/block/ps3disk.o
 
 We can combine several `klocalizer` features to build an `allnoconfig` kernel that adds in the `ps3disk.o` compilation unit and sets all `tristate` options to modules.
-    
+
     make.cross ARCH=powerpc allnoconfig
     klocalizer -a powerpc --match .config --modules --define CONFIG_MODULES --include drivers/block/ps3disk.o
     make.cross ARCH=powerpc olddefconfig
@@ -500,7 +500,7 @@ unit.  The following are examples of how to customize this process.
 
 - Finding all architectures in which the compilation can be configured
 
-    klocalizer --report-all 
+    klocalizer --report-all
 
 - Setting additional configuration options
 
@@ -512,6 +512,43 @@ unit.  The following are examples of how to customize this process.
     Note that this can prevent finding a valid configuration.
 
         klocalizer -a x86_64 --undefine CONFIG_USB --include drivers/usb/storage/alauda.o  # no configuration possible because alauda depends on USB
+
+- Generating configurations for mutually exclusive configuration requirements
+
+    `--config-mutex` accepts one configuration literal per use. A `CONFIG_*`
+    literal requires the option to be enabled, while a literal beginning with
+    `!` requires it to be disabled. Quote disabled literals to prevent the shell
+    from interpreting `!`. `klocalizer` generates as many configurations as
+    needed to cover the requirements.
+
+        klocalizer -a x86_64 --config-mutex CONFIG_KVM --config-mutex '!CONFIG_KVM'
+
+    `--config-mutex-file` accepts the same literals from a file, with one
+    requirement per line. For example, given `config-mutex.txt` containing:
+
+        CONFIG_KASAN
+        !CONFIG_KASAN
+
+    run:
+
+        klocalizer -a x86_64 --config-mutex-file config-mutex.txt
+
+    `--constraints-mutex-file` accepts one Boolean configuration expression per
+    line. Expressions may use `CONFIG_*` identifiers, parentheses, and the
+    lowercase operators `and`, `or`, and `not`. Blank lines and lines beginning
+    with `#` are ignored. For example, given `constraints-mutex.txt` containing:
+
+        CONFIG_KVM and not CONFIG_KASAN
+        not CONFIG_KVM and CONFIG_KASAN
+
+    run:
+
+        klocalizer -a x86_64 --constraints-mutex-file constraints-mutex.txt
+
+    Each command writes the generated configurations to the output directory and
+    records which requirements were covered in `coverage_report.json`. This flag
+    is useful when necessary expressions are extracted and ready to be passed to
+    the SMT solver, bypassing slower SuperC presence condition checks.
 
 - Investigating unsatisfied constraints
 
@@ -571,31 +608,31 @@ e.g., `allnoconfig`, with the `--approximate` flag.
 - Compilation unit not buildable.  There are several possible reasons:
 
     1. The compilation unit has already been compiled.  First clean with
-       
+
             make clean
 
     2. While most compilation units can be built individually with make, some cannot.  In these cases, build the parent directory instead, e.g.,
-    
+
             klocalizer --include drivers/char/ipmi/ipmi_devintf.o  # finds it buildable in x86_64
             make.cross ARCH=x86_64 olddefconfig
             make.cross ARCH=x86_64 drivers/char/ipmi/
-            
+
     3. Composites do not correspond to source files and are not built directly via `make`.  Instead they are composed of other compilation units.  For instance, `drivers/block/zram/zram.o` is comprised of `zcomp.o` and `zram_drv.o`.  After finding a satisfying configuration, build the parent directory to see the source files that comprise it built.
-    
+
             klocalizer --approximate .config drivers/block/zram/zram.o
             make olddefconfig
             make drivers/block/zram/
-        
+
     4. The configuration causes the unit to be built, but it has a compile-time error.
-    
-            klocalizer --include drivers/block/amiflop.o  # finds it buildable in 
+
+            klocalizer --include drivers/block/amiflop.o  # finds it buildable in
             make.cross ARCH=m68k olddefconfig
             make.cross ARCH=m68k drivers/block/amiflop.o  # Makefile sees it, but causes compiler error.
-        
+
     5. Klocalizer's formulas were wrong in some cases.  Please file an issue with source version number and klocalizer command used.
 
 - If the unit's configuration constraints depend on `CONFIG_BROKEN`, then `klocalizer`, by default, which detect it and stop searching, because the compilation unit may not be (easily) compilable.
-    
+
         klocalizer --include drivers/watchdog/pnx833x_wdt.o  # stops after finding a dependency on `CONFIG_BROKEN`
 
     To get a configuration anyway, use `--allow-config-broken`
@@ -682,18 +719,18 @@ Get the Kbuild file constraint formulas:
 
 ### Test out `klocalizer` on BusyBox
 
-Unlike Linux, BusyBox will build a `.o` with `make`, even if it is not configured in, e.g., 
+Unlike Linux, BusyBox will build a `.o` with `make`, even if it is not configured in, e.g.,
 
     make clean
     make allnoconfig
     make coreutils/fsync.o
-    
+
 This will compile `coreutils/fsync.o` even though it wouldn't have been built with `make`, e.g.,
 
     make clean
     make allnoconfig
     make
-    
+
 The `coreutils/fsync.o` file should not exist
 
     $ ls coreutils/fsync.o
@@ -749,11 +786,11 @@ First get the Linux source and prepare its build system.
 To try Kmax on a particular Kbuild Makefile, use the `kbuildplus.py` tool:
 
     kmax ipc/
-    
+
 This will run Kmax on a single Kbuild Makefile, and show the symbolic configurations for each compilation unit and subdirectory.  Kmax can also recursively analyze Kbuild Makefiles by following subdirectories, use the `kmaxdriver.py` which uses `kbuildplus.py` to process each Kbuild Makefile and recursively process those in subdirectories.  `-g` means collect the symbolic constraints.
 
     kmaxall -g net/
-    
+
 Kmax includes a Makefile hack to get all the top-level Linux directories.  Combined with `kmaxall` this command will collect the symbolic constraints for the whole (x86) source, saving them into `unit_pc`.  Be sure to change `/path/to/kmax` to your kmax installation to get the Makefile shunt.
 
     kmaxall -g $(make CC=cc ARCH=x86 -f /path/to/kmax/scripts/makefile_override alldirs) | tee kmax
@@ -794,7 +831,7 @@ Then, from the root of a Linux source tree, run the following:
 
     # all the configs
     grep "^config " kconfig.kclause | cut -f2 -d\  | sort | uniq | tee configs.txt
-    
+
     # the visibles should be a subset of the configs
     diff configs.txt visible.txt  | grep ">"
 
@@ -820,7 +857,7 @@ Then, from the root of a Linux source tree, run the following:
     dep_name := 'dep' | 'rev_dep'
     bi_line := expr '|' expr
     contraint_line := expr
-    
+
     // expressions
     type_name := 'bool' | 'string' | 'number'
     bool_value := '1' | '0'
